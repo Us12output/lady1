@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>clock</title>
+    <link rel="stylesheet" href="l2.css">
+    <script src="toggle.js"></script>
+</head>
+
+<body>
+
+
+    <nav>
+        <div>
+            <button class="theme-toggle-btn" onclick="toggleTheme()" title="Theme Change">
+                <div class="toggle-track">
+                    <div class="toggle-knob">
+                        <span class="toggle-icon" id="themeIcon">🌒</span>
+                    </div>
+                </div>
+                <span class="toggle-label" id="themeLabel">Auto</span>
+            </button>
+        </div>
+        <div>
+            <a href="#c">Clock</a>
+            <a href="#t">Timer</a>
+            <a href="#a">Alarm</a>
+        </div>
+    </nav>
+
+
+
+    <div id="equal" class="eq">
+        <!-- Clock Section -->
+        <div class="clock-section" id="c">
+            <h2>🕐 Analog Clock</h2>
+            <div id="clockContainer">
+                <div id="hour"></div>
+                <div id="minute"></div>
+                <div id="second"></div>
+            </div>
+            <div id="digitalTime" class="time-display"></div>
+        </div>
+
+        <!-- Timer Section -->
+        <div class="timer-section" id="t">
+            <h2>⛔⏱️ Timer</h2>
+            <div id="timerDisplay">00:00:00</div>
+            <div class="timer-controls">
+                <input type="number" id="hours" min="0" max="24" value="0">
+                <span>:</span>
+                <input type="number" id="minutes" min="0" max="59" value="0">
+                <span>:</span>
+                <input type="number" id="seconds" min="0" max="59" value="0">
+            </div>
+            <div style="text-align: center; gap: 10px; display: flex; justify-content: center; flex-wrap: wrap;">
+                <button class="btn btn-start" onclick="startTimer()">Start</button>
+                <button class="btn btn-pause" onclick="pauseTimer()">Pause</button>
+                <button class="btn btn-reset" onclick="resetTimer()">Reset</button>
+            </div>
+        </div>
+
+        <!-- Alarm Section -->
+        <div class="alarm-section" id="a">
+            <h2>⏰ Alarm</h2>
+            <div class="alarm-input">
+                <select id="alarmHour">
+                    <option value="">Hour</option>
+                    <!-- Populated by JS -->
+                </select>
+                <select id="alarmMinute">
+                    <option value="">Minute</option>
+                    <!-- Populated by JS -->
+                </select>
+                <button class="btn btn-start" onclick="setAlarm()">Set Alarm</button>
+            </div>
+            <div id="alarmsList"></div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification">
+        <strong>Alarm Ringing! ⏰</strong>
+    </div>
+
+    <script>
+        let hour = document.getElementById('hour');
+        let minute = document.getElementById('minute');
+        let second = document.getElementById('second');
+        let digitalTime = document.getElementById('digitalTime');
+
+        // Clock functionality
+        function updateClock() {
+            const now = new Date();
+            const h = now.getHours();
+            const m = now.getMinutes();
+            const s = now.getSeconds();
+
+            const hrotation = 30 * h + m / 2;
+            const mrotation = 6 * m;
+            const srotation = 6 * s;
+
+            hour.style.transform = `rotate(${hrotation}deg)`;
+            minute.style.transform = `rotate(${mrotation}deg)`;
+            second.style.transform = `rotate(${srotation}deg)`;
+
+            digitalTime.textContent = now.toLocaleTimeString();
+        }
+
+        // Timer functionality
+        let timerInterval;
+        let timerPaused = false;
+        let timerTime = 0;
+
+        function updateTimerDisplay() {
+            const hours = Math.floor(timerTime / 3600);
+            const minutes = Math.floor((timerTime % 3600) / 60);
+            const seconds = timerTime % 60;
+            document.getElementById('timerDisplay').textContent =
+                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function startTimer() {
+            if (timerPaused) {
+                timerPaused = false;
+                return;
+            }
+
+            const h = parseInt(document.getElementById('hours').value) || 0;
+            const m = parseInt(document.getElementById('minutes').value) || 0;
+            const s = parseInt(document.getElementById('seconds').value) || 0;
+            timerTime = h * 3600 + m * 60 + s;
+
+            if (timerTime === 0) return;
+
+
+            timerInterval = setInterval(() => {
+                if (!timerPaused && timerTime > 0) {
+                    timerTime--;
+                    updateTimerDisplay();
+                    if (timerTime === 0) {
+                        clearInterval(timerInterval);
+                        showNotification("Timer Finished! ⏰");
+                        playSound();
+                    }
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            timerPaused = !timerPaused;
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timerTime = 0;
+            timerPaused = false;
+            updateTimerDisplay();
+        }
+
+        // Alarm functionality
+        let alarms = [];
+
+        function populateAlarmInputs() {
+            const hourSelect = document.getElementById('alarmHour');
+            const minuteSelect = document.getElementById('alarmMinute');
+
+            hourSelect.innerHTML = '<option value="">Hour</option>';
+            minuteSelect.innerHTML = '<option value="">Minute</option>';
+
+            for (let i = 0; i < 24; i++) {
+                hourSelect.innerHTML += `<option value="${i.toString().padStart(2, '0')}">${i.toString().padStart(2, '0')}</option>`;
+            }
+            for (let i = 0; i < 60; i++) {
+                minuteSelect.innerHTML += `<option value="${i.toString().padStart(2, '0')}">${i.toString().padStart(2, '0')}</option>`;
+            }
+        }
+
+        function setAlarm() {
+            const hour = document.getElementById('alarmHour').value;
+            const minute = document.getElementById('alarmMinute').value;
+
+            if (!hour || !minute) {
+                alert('Please select hour and minute!');
+                return;
+            }
+
+            const alarmTime = `${hour}:${minute}`;
+            alarms.push(alarmTime);
+            updateAlarmsList();
+            document.getElementById('alarmHour').value = '';
+            document.getElementById('alarmMinute').value = '';
+        }
+
+        function updateAlarmsList() {
+            const list = document.getElementById('alarmsList');
+            list.innerHTML = '';
+            alarms.forEach((alarm, index) => {
+                const div = document.createElement('div');
+                div.className = 'alarm-item';
+                div.innerHTML = `
+                    <span>⏰ ${alarm}</span>
+                    <button class="delete-alarm" onclick="deleteAlarm(${index})">Delete</button>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function deleteAlarm(index) {
+            alarms.splice(index, 1);
+            updateAlarmsList();
+        }
+
+        function checkAlarms() {
+            const now = new Date();
+            const currentTime = now.toLocaleTimeString('en-US', {
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            if (alarms.includes(currentTime)) {
+                showNotification(`Alarm: ${currentTime}! ⏰`);
+                playSound();
+            }
+        }
+
+        // Utility functions
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
+        }
+
+        function playSound() {
+            // Create and play beep sound
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.frequency.value = 800;
+            oscillator.type = 'sine';
+
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1);
+
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 1);
+        }
+
+        // Initialize
+        populateAlarmInputs();
+        updateClock();
+        setInterval(updateClock, 1000);
+        setInterval(checkAlarms, 1000);
+        updateTimerDisplay();
+    </script>
+</body>
+
+</html>

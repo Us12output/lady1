@@ -1,0 +1,640 @@
+/* ===== CSS VARIABLES FOR THEMES ===== */
+:root {
+    --bg-gradient: linear-gradient(135deg, #a5acd5 0%, #ffffff 150%);
+    --card-bg: rgba(252, 231, 231, 0.1);
+    --card-border: rgba(255, 255, 255, 0.2);
+    --card-shadow: rgba(0, 0, 0, 0.1);
+    --text-color: rgb(85, 84, 84);
+    --nav-bg: rgba(0, 0, 0, 0.4);
+    --nav-link: #faaeae;
+    --nav-link-glow: rgba(255, 56, 56, 0.8);
+    --input-bg: rgba(255, 255, 255, 0.9);
+    --alarm-item-bg: rgba(255, 255, 255, 0.1);
+    --timer-display-shadow: rgba(255, 255, 255, 0.8);
+}
+
+/* ===== DARK MODE ===== */
+body.dark-mode {
+    --bg-gradient: linear-gradient(135deg, #302f2f 0%, #bebed0 100%);
+    --card-bg: rgba(36, 36, 46, 0.85);
+    --card-border: rgba(255, 100, 100, 0.15);
+    --card-shadow: rgba(0, 0, 0, 0.5);
+    --text-color: #f0e6e6;
+    --nav-bg: rgba(5, 5, 10, 0.85);
+    --nav-link: #ff8a8a;
+    --nav-link-glow: rgba(255, 80, 80, 0.9);
+    --input-bg: rgba(156, 156, 158, 0.95);
+    --alarm-item-bg: rgba(255, 255, 255, 0.05);
+    --timer-display-shadow: rgba(255, 100, 100, 0.6);
+}
+
+/* ===== LIGHT MODE ===== */
+body.light-mode {
+    --bg-gradient: linear-gradient(135deg, #a99c9c 0%, #ffffff 100%);
+    --card-bg: rgba(242, 219, 219, 0.75);
+    --card-border: rgba(180, 100, 100, 0.2);
+    --card-shadow: rgba(75, 56, 56, 0.12);
+    --text-color: #3a2020;
+    --nav-bg: rgba(255, 238, 238, 0.85);
+    --nav-link: #1d1414;
+    --nav-link-glow: rgba(180, 60, 60, 0.5);
+    --input-bg: rgba(255, 255, 255, 0.95);
+    --alarm-item-bg: rgba(180, 80, 80, 0.08);
+    --timer-display-shadow: rgba(180, 60, 60, 0.4);
+}
+
+/* ===== APPLY VARIABLES TO EXISTING ELEMENTS ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    transition: background 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: var(--bg-gradient);
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+nav {
+    position: fixed;
+    top: 0;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--nav-bg);
+    backdrop-filter: blur(10px);
+    z-index: 999;
+    width: 100%;
+}
+
+nav a {
+    color: var(--nav-link);
+    margin-left: 20px;
+    text-shadow: 0 0 20px var(--nav-link-glow);
+    text-decoration: none;
+}
+
+.clock-section,
+.timer-section,
+.alarm-section {
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
+    margin: 20px;
+    box-shadow: 0 20px 40px var(--card-shadow);
+    border: 1px solid var(--card-border);
+    min-width: 350px;
+}
+
+h2 {
+    color: var(--text-color);
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 24px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.time-display {
+    text-align: center;
+    color: var(--text-color);
+    font-size: 28px;
+    font-weight: bold;
+    margin: 20px 0;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+#timerDisplay {
+    font-size: 48px;
+    font-weight: bold;
+    color: var(--text-color);
+    text-shadow: 0 0 20px var(--timer-display-shadow);
+    margin: 20px 0;
+}
+
+input[type="number"] {
+    width: 70px;
+    height: 50px;
+    font-size: 20px;
+    text-align: center;
+    border: none;
+    border-radius: 12px;
+    background: var(--input-bg);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.alarm-input select {
+    padding: 12px;
+    font-size: 18px;
+    border: none;
+    border-radius: 12px;
+    background: var(--input-bg);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.alarm-item {
+    background: var(--alarm-item-bg);
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--text-color);
+}
+
+/* ===== THEME TOGGLE BUTTON ===== */
+.theme-toggle-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 20px;
+    outline: none;
+}
+
+/* The pill/track */
+.toggle-track {
+    width: 60px;
+    height: 30px;
+    border-radius: 30px;
+    background: linear-gradient(135deg, #1a1a2e, #2d2d4e);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    transition: background 0.4s ease, border-color 0.4s ease;
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4), 0 0 10px rgba(255, 100, 100, 0.2);
+}
+
+body.light-mode .toggle-track {
+    background: linear-gradient(135deg, #f7c5c5, #fde8d8);
+    border-color: rgba(180, 80, 80, 0.3);
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.1), 0 0 10px rgba(255, 160, 100, 0.3);
+}
+
+/* The circle knob */
+.toggle-knob {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #ffffff, #dddddd);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.4s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+}
+
+body.dark-mode .toggle-knob {
+    transform: translateX(30px);
+    background: linear-gradient(145deg, #2a2a4a, #1a1a30);
+    color: #aaaaff;
+}
+
+body.light-mode .toggle-knob {
+    transform: translateX(0px);
+    background: linear-gradient(145deg, #fff4e0, #ffdd99);
+    color: #cc7700;
+}
+
+/* Default (no class = original reddish theme) */
+body:not(.dark-mode):not(.light-mode) .toggle-knob {
+    transform: translateX(14px);
+}
+
+/* Icon inside knob */
+.toggle-icon {
+    font-size: 11px;
+    line-height: 1;
+    user-select: none;
+}
+
+/* Label next to toggle */
+.toggle-label {
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--nav-link);
+    text-shadow: 0 0 8px var(--nav-link-glow);
+    min-width: 38px;
+    transition: color 0.3s ease;
+    user-select: none;
+}
+
+/* Hover glow effect on track */
+.theme-toggle-btn:hover .toggle-track {
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3), 0 0 18px rgba(255, 120, 120, 0.5);
+}
+
+/* ===== RESPONSIVE ADJUSTMENTS ===== */
+@media (max-width: 768px) {
+    .toggle-label {
+        display: none;
+    }
+
+    .toggle-track {
+        width: 50px;
+        height: 26px;
+    }
+
+    .toggle-knob {
+        width: 18px;
+        height: 18px;
+    }
+
+    body.dark-mode .toggle-knob {
+        transform: translateX(24px);
+    }
+
+    body:not(.dark-mode):not(.light-mode) .toggle-knob {
+        transform: translateX(12px);
+    }
+}
+
+/* ===== REST OF ORIGINAL STYLES (unchanged) ===== */
+#equal {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: flex-start;
+    margin-left: 10%;
+}
+
+#clockContainer {
+    margin: auto;
+    height: 30vw;
+    width: 30vw;
+    background: url(a/ck.jpg) no-repeat;
+    background-size: 100%;
+    max-width: 100%;
+}
+
+#hour,
+#minute,
+#second {
+    position: relative;
+    background: rgb(0, 0, 0);
+    border-radius: 10px;
+}
+
+#hour {
+    width: 1%;
+    height: 21%;
+    top: 27%;
+    left: 49.6%;
+    background-color: #494848;
+    transform-origin: bottom;
+}
+
+#minute {
+    width: 1%;
+    height: 30%;
+    top: -03.1%;
+    left: 49.6%;
+    background-color: #494848;
+    transform-origin: bottom;
+}
+
+#second {
+    width: 0.8%;
+    height: 40%;
+    top: -43%;
+    left: 49.6%;
+    background-color: #f33e3e;
+    transform-origin: bottom;
+}
+
+.timer-controls {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-start {
+    background: linear-gradient(145deg, #00d4aa, #00b894);
+    color: white;
+}
+
+.btn-pause {
+    background: linear-gradient(145deg, #f39c12, #e67e22);
+    color: white;
+}
+
+.btn-reset {
+    background: linear-gradient(145deg, #e74c3c, #c0392b);
+    color: white;
+}
+
+.btn-stop {
+    background: linear-gradient(145deg, #95a5a6, #7f8c8d);
+    color: white;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.alarm-input {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+#alarmsList {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: 20px;
+}
+
+.delete-alarm {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(145deg, #ff6b6b, #ee5a52);
+    color: white;
+    padding: 20px 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transform: translateX(400px);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+}
+
+.notification.show {
+    transform: translateX(0);
+}
+
+@media (max-width: 1024px) {
+    #clockContainer {
+        height: 40vw;
+        width: 40vw;
+    }
+
+    #equal {
+        align-items: center;
+        margin-left: 0;
+        flex-direction: column;
+    }
+
+    .clock-section,
+    .timer-section,
+    .alarm-section {
+        width: 80%;
+        margin: 15px auto;
+        min-width: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    #clockContainer {
+        height: 55vw;
+        width: 55vw;
+    }
+
+    .clock-section,
+    .timer-section,
+    .alarm-section {
+        width: 90%;
+        margin: 10px auto;
+        min-width: unset;
+        padding: 20px;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    #timerDisplay {
+        font-size: 38px;
+    }
+
+    .time-display {
+        font-size: 22px;
+    }
+
+    .timer-controls {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    input[type="number"] {
+        width: 60px;
+        height: 45px;
+        font-size: 16px;
+    }
+
+    .btn {
+        padding: 10px 18px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    #clockContainer {
+        height: 70vw;
+        width: 70vw;
+    }
+
+    #timerDisplay {
+        font-size: 30px;
+    }
+
+    .time-display {
+        font-size: 18px;
+    }
+
+    .alarm-input {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .alarm-input select {
+        width: 100%;
+    }
+
+    input[type="number"] {
+        width: 50px;
+        height: 40px;
+        font-size: 16px;
+    }
+
+    .btn {
+        padding: 8px 14px;
+        font-size: 13px;
+    }
+
+    h2 {
+        font-size: 18px;
+    }
+
+    #hour {
+        width: 1%;
+        height: 21%;
+        top: 23.1%;
+        left: 49.45%;
+        background-color: #494848;
+        transform-origin: bottom;
+    }
+
+    #minute {
+        width: 1%;
+        height: 30%;
+        top: -06.6%;
+        left: 49.45%;
+        background-color: #494848;
+        transform-origin: bottom;
+    }
+
+    #second {
+        width: 0.8%;
+        height: 40%;
+        top: -46.8%;
+        left: 49.45%;
+        background-color: #f33e3e;
+        transform-origin: bottom;
+    }
+}
+
+@media(max-width:360px) {
+    #clockContainer {
+        height: 80vw;
+        width: 80vw;
+    }
+
+    .clock-section,
+    .alarm-section,
+    .timer-section {
+        padding: 15px;
+    }
+
+    .timer-controls {
+        gap: 6px;
+    }
+
+    .btn {
+        padding: 7px 12px;
+        font-size: 12px;
+    }
+
+    #hour {
+        width: 1%;
+        height: 21%;
+        top: 23.5%;
+        left: 49.45%;
+        background-color: #494848;
+        transform-origin: bottom;
+    }
+
+    #minute {
+        width: 1%;
+        height: 30%;
+        top: -06.5%;
+        left: 49.45%;
+        background-color: #494848;
+        transform-origin: bottom;
+    }
+
+    #second {
+        width: 0.8%;
+        height: 40%;
+        top: -46.45%;
+        left: 49.45%;
+        background-color: #f33e3e;
+        transform-origin: bottom;
+    }
+}
+
+@media(max-width:144px) {
+    #clockContainer {
+        height: 80vw;
+        width: 80vw;
+    }
+
+    .clock-section,
+    .alarm-section,
+    .timer-section {
+        padding: 15px;
+    }
+
+    .timer-controls {
+        gap: 6px;
+    }
+
+    .btn {
+        padding: 7px 12px;
+        font-size: 12px;
+    }
+
+    #hour {
+        width: 1%;
+        height: 21%;
+        top: 29%;
+        left: 49.45%;
+        background-color: #494848;
+        transform-origin: bottom;
+    }
+
+    #minute {
+        width: 1%;
+        height: 30%;
+        top: -0.9%;
+        left: 49.45%;
+        background-color: #494848;
+        transform-origin: bottom;
+    }
+
+    #second {
+        width: 0.8%;
+        height: 40%;
+        top: -41.2%;
+        left: 49.45%;
+        background-color: #f33e3e;
+        transform-origin: bottom;
+    }
+}
